@@ -1,12 +1,16 @@
 export default class Sequencer {
-  constructor() {
-    this.sequence = Array(16).fill(false);
-    this.currentStep = 0;
-    this.isPlaying = false;
+  constructor(sequence) {
+    this.sequence = sequence;
   }
 
-  toggleStep(index) {
+  toggleStep(track, step) {
+    const index = (track - 1) * 16 + step - 1;
     this.sequence[index] = !this.sequence[index];
+  }
+
+  getStep(track, step) {
+    const index = (track - 1) * 16 + step - 1;
+    return this.sequence[index];
   }
 
   play() {

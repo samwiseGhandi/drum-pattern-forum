@@ -33,11 +33,12 @@
             <h2 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded track-{{ track }}">
               Track-{{ track }}</h2>
             <button v-for="step in 16" class="w-10 h-10" :key="(track - 1) * 16 + step" :class="{
-              'bg-gray-400 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded': !sequencer.sequence[(track - 1) * 16 + step - 1],
-              'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded': sequencer.sequence[(track - 1) * 16 + step - 1]
+              'bg-gray-400 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded': !sequencer.getStep(track, step),
+              'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded': sequencer.getStep(track, step)
             }" @click="toggleStep(track, step)">
               <span class="step-number">{{ step }}</span>
             </button>
+
           </div>
 
           <!-- <audio class="track-1-sound" src=""></audio>
@@ -51,19 +52,41 @@
 </template>
 
 <script>
-import Sequencer from "../utils/Sequencer"
+import Sequencer from "../utils/Sequencer";
 export default {
   data() {
     return {
-      sequencer: new Sequencer, // Initialize sequencer as null
+      sequencer: null,
       // sequence: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+      sequence: Array(16).fill(false), // Initialize the sequence array with 16 false values
       isPlaying: false,
       currentStep: 0,
       tempo: 120,
       amountOfTracks: 4,
     };
   },
+  created() {
+    this.sequencer = new Sequencer(this.sequence);
+  },
+
   methods: {
+    toggleStep(track, step) {
+      this.sequencer.toggleStep(track, step);
+    },
+    play() {
+      this.isPlaying = true;
+      this.playStep();
+    },
+    playStep() {
+      if (this.sequence[this.currentStep]) {
+        console.log(`Step ${this.currentStep} triggered.`);
+        // Logic here for playback
+      }
+      this.currentStep = (this.currentStep + 1) % this.sequence.length;
+      if (this.isPlaying) {
+        setTimeout(this.playStep, 300); // Adjust the timing interval as needed
+      }
+    },
     pause() {
       this.isPlaying = false;
     },
