@@ -34,15 +34,15 @@
               <h2 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded track-{{ track }}">
                 Track-{{ track }}</h2>
               <button v-for="step in 16" class="w-10 h-10" :key="(track - 1) * 16 + step"
-                :class="`bg-gray-400 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded track-box-${track}-${step - 1} `"
-                @click="toggleStep(index)">
+                :class="`bg-gray-400 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded track-box-${track}-${step} `"
+                @click="toggleStep(step)">
                 <span class="step-number">{{ step }}</span>
               </button>
             </div>
             <div class="grid-column">
               <h2 class="p-1 track"></h2>
               <div v-for="step in 16" class="w-10 h-4" :key="(step - 1) * 16 + step"
-                :class="`p-1 track-box-${track}-${step - 1}`">
+                :class="`p-1 track-box-${step}-${step - 1}`">
                 <span class="step-nr text-xs">{{ step }}</span>
               </div>
             </div>
@@ -62,7 +62,7 @@
 export default {
   data() {
     return {
-      sequence: [],
+      sequence: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
       isPlaying: false,
       currentStep: 0,
       tempo: 120,
@@ -74,14 +74,27 @@ export default {
       this.sequence[index] = !this.sequence[index];
     },
     play() {
+      this.currentStep = 0; // Reset the current step to the beginning
       this.isPlaying = true;
       this.playStep();
     },
     playStep() {
+      const previousStep = (this.currentStep - 1 + this.sequence.length) % this.sequence.length;
+      const previousStepElement = document.querySelector(`.track-box-${previousStep + 1}`);
+      if (previousStepElement) {
+        previousStepElement.classList.remove("active-step");
+      }
+
       if (this.sequence[this.currentStep]) {
         console.log(`Step ${this.currentStep} triggered.`);
-        //logic here for playback
+        // Logic here for playback
       }
+
+      const currentStepElement = document.querySelector(`.track-box-${this.currentStep + 1}`);
+      if (currentStepElement) {
+        currentStepElement.classList.add("active-step");
+      }
+
       this.currentStep = (this.currentStep + 1) % this.sequence.length;
       if (this.isPlaying) {
         setTimeout(this.playStep, 300); // Adjust the timing interval as needed
@@ -143,5 +156,9 @@ h2 {
 
 .step-number {
   display: none;
+}
+
+.active-step {
+  background-color: orange;
 }
 </style>
