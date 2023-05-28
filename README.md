@@ -1,6 +1,6 @@
-# Drum pattern forum
+# Drum Pattern Forum - WIP
 I found a book called 260 drum patterns and thought it would be fun to make a simple CRUD application where people can upload their drum patterns and get creative. It's still a WIP.
-## ---------------------------------------------------------------------------
+
 ## Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
