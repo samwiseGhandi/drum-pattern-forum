@@ -37,16 +37,10 @@
             </div>
           </div>
 
-
-
-
-
-
-
-          <!-- <audio class="kick-sound" src="./sounds/kick.wav"></audio>
-        <audio class="clap-sound" src="./sounds/clap.wav"></audio>
-        <audio class="open-hat-sound" src="./sounds/open-hat.wav"></audio>
-        <audio class="closed-hat-sound" src="./sounds/closed-hat.wav"></audio> -->
+          <!-- <audio class="track-1-sound" src=""></audio>
+          <audio class="track-2-sound" src=""></audio>
+          <audio class="track-3-sound" src=""></audio>
+          <audio class="track-4-sound" src=""></audio> -->
         </div>
       </main>
     </div>
