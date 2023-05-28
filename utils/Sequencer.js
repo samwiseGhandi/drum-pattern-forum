@@ -29,6 +29,26 @@ export default class Sequencer {
     if (this.isPlaying) {
       setTimeout(() => this.playStep(), 300); // Adjust the timing interval as needed
     }
+    // Highlight the current step button
+    const previousStep =
+      this.currentStep === 0 ? this.sequence.length - 1 : this.currentStep - 1;
+    const previousButton = document.querySelector(
+      `.track-box-${Math.floor(previousStep / 16) + 1}-${
+        (previousStep % 16) + 1
+      }`
+    );
+    if (previousButton) {
+      previousButton.classList.remove("active-step");
+    }
+
+    const currentButton = document.querySelector(
+      `.track-box-${Math.floor(this.currentStep / 16) + 1}-${
+        (this.currentStep % 16) + 1
+      }`
+    );
+    if (currentButton) {
+      currentButton.classList.add("active-step");
+    }
   }
 
   pause() {

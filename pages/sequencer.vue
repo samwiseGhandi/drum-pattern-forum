@@ -29,16 +29,16 @@
           </div>
 
           <!-- Pattern area -->
-          <div class="grid-column patterns flex mb-1" v-for="track in amountOfTracks">
+          <div v-for="track in amountOfTracks" :key="track" class="grid-column patterns flex mb-1">
             <h2 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded track-{{ track }}">
               Track-{{ track }}</h2>
-            <button v-for="step in 16" class="w-10 h-10" :key="(track - 1) * 16 + step" :class="{
+            <button v-for="step in 16" :key="step" :class="{
               'bg-gray-400 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded': !sequencer.getStep(track, step),
-              'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded': sequencer.getStep(track, step)
+              'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded': sequencer.getStep(track, step),
+              'active-step': isPlaying && currentStep === step - 1
             }" @click="toggleStep(track, step)">
               <span class="step-number">{{ step }}</span>
             </button>
-
           </div>
 
           <!-- <audio class="track-1-sound" src=""></audio>
@@ -56,9 +56,7 @@ import Sequencer from "../utils/Sequencer";
 export default {
   data() {
     return {
-      sequencer: null,
-      // sequence: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
-      sequence: Array(16).fill(false), // Initialize the sequence array with 16 false values
+      sequencer: new Sequencer(Array(this.amountOfTracks).fill(Array(16).fill(false))), sequence: Array(16).fill(false), // Initialize the sequence array with 16 false values
       isPlaying: false,
       currentStep: 0,
       tempo: 120,
@@ -73,18 +71,37 @@ export default {
     toggleStep(track, step) {
       this.sequencer.toggleStep(track, step);
     },
+
     play() {
       this.isPlaying = true;
+      this.currentStep = 0;
       this.playStep();
     },
+
     playStep() {
-      if (this.sequence[this.currentStep]) {
-        console.log(`Step ${this.currentStep} triggered.`);
-        // Logic here for playback
+      for (let track = 0; track <= this.amountOfTracks; track++) {
+        if (this.sequencer.getStep(track, this.currentStep)) {
+          console.log(`Track ${track + 1} - Step ${this.currentStep + 1} triggered.`);
+          // Logic here for playback of each activated step in each track
+        }
       }
-      this.currentStep = (this.currentStep + 1) % this.sequence.length;
+
+      this.currentStep = (this.currentStep + 1) % 16; // Repeat after 16 steps
+
       if (this.isPlaying) {
-        setTimeout(this.playStep, 300); // Adjust the timing interval as needed
+        setTimeout(this.playStep, 500); // Adjust the timing interval as needed
+      }
+
+      // Highlight the current step button
+      const previousStep = (this.currentStep === 0) ? this.sequence.length - 1 : this.currentStep - 1;
+      const previousButton = document.querySelector(`.track-box-${Math.floor(previousStep / 16) + 1}-${(previousStep % 16) + 1}`);
+      if (previousButton) {
+        previousButton.classList.remove('active-step');
+      }
+
+      const currentButton = document.querySelector(`.track-box-${Math.floor(this.currentStep / 16) + 1}-${(this.currentStep % 16) + 1}`);
+      if (currentButton) {
+        currentButton.classList.add('active-step');
       }
     },
     pause() {
@@ -93,6 +110,11 @@ export default {
     stop() {
       this.isPlaying = false;
       this.currentStep = 0;
+      // Remove active step highlighting
+      const activeStepButton = document.querySelector('.active-step');
+      if (activeStepButton) {
+        activeStepButton.classList.remove('active-step');
+      }
     },
   },
 };
