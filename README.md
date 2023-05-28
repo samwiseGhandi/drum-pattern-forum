@@ -3,7 +3,7 @@ I found a book called [260 drum machine patterns](https://ia800700.us.archive.or
 
 ## Setup
 
-###Make sure to install the dependencies:
+### Make sure to install the dependencies:
 
 ```bash
 # yarn
